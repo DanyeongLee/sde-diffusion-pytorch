@@ -80,7 +80,7 @@ class SubVP_SDE(SDEBase):
     
     def diffusion_coef(self, t):
         coef = self.beta_t(t)
-        coef *= 1 - np.exp(-2 * self.beta_t_integrated(t))
+        coef *= 1 - torch.exp(-2 * self.beta_t_integrated(t))
         return torch.sqrt(coef)
     
     def x0_coef(self, t):
@@ -90,4 +90,4 @@ class SubVP_SDE(SDEBase):
     
     def sigma_t(self, t):
         x = self.x0_coef(t)
-        return torch.sqrt(1 - x**2)
+        return 1 - x**2
