@@ -14,7 +14,7 @@ class VE_SDE(SDEBase):
         self.sigma_max = sigma_max
 
     def drift_coef(self, x, t):
-        return 0
+        return torch.zeros_like(x)
 
     def sigma_t(self, t):
         return self.sigma_min * (self.sigma_max / self.sigma_min) ** t
@@ -24,7 +24,7 @@ class VE_SDE(SDEBase):
         return s_t * np.sqrt(2 * np.log(self.sigma_max / self.sigma_min))
     
     def x0_coef(self, t):
-        return 1
+        return torch.ones_like(t)
 
 
 class VP_SDE(SDEBase):
