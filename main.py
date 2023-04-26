@@ -32,17 +32,22 @@ def train(model, optimizer, ema, sde, dataloader, device):
 
 
 @torch.no_grad()
-def validation(model, sde, dataloader, device):
-    epoch_loss = 0.
-    epoch_samples = 0
-    model.eval()
-    for x, _ in tqdm(dataloader):
-        x = x.to(device)
-        loss = sde.score_matching_loss(model, x)
-        epoch_loss += loss.item() * x.shape[0]
-        epoch_samples += x.shape[0]
-    epoch_loss = epoch_loss / epoch_samples
-    return epoch_loss
+def validation(model, sde, ema, dataloader, device):
+    with ema.average_parameters():
+        epoch_loss = 0.
+        epoch_samples = 0
+        model.eval()
+        for x, _ in tqdm(dataloader):
+            x = x.to(device)
+            loss = sde.score_matching_loss(model, x)
+            epoch_loss += loss.item() * x.shape[0]
+            epoch_samples += x.shape[0]
+        epoch_loss = epoch_loss / epoch_samples
+
+        samples = sde.predictor_corrector_sample(model, (8, 1, 28, 28), device)
+        samples = torch.clamp(samples, 0., 1.)
+
+    return epoch_loss, samples
 
 
 
@@ -76,11 +81,8 @@ def main(cfg: DictConfig):
     for epoch in range(cfg.train.n_epochs):
         print(f'Epoch {epoch}')
         train_loss = train(model, optimizer, ema, sde, train_dataloader, device)
-        val_loss = validation(model, sde, val_dataloader, device)
+        val_loss, samples = validation(model, sde, val_dataloader, device)
         wandb.log({'train/loss': train_loss, 'val/loss': val_loss})
-
-        samples = sde.predictor_corrector_sample(model, (2, 1, 28, 28), device)
-        samples = torch.clamp(samples, 0., 1.)
         wandb.log({'samples': [wandb.Image(sample) for sample in samples]})
 
     ckpt_dir = os.path.dirname(to_absolute_path(cfg.ckpt_path))

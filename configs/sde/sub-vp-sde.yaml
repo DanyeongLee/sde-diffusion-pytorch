@@ -1,4 +1,4 @@
-_target_: src.sde.Sub_VP_SDE
+_target_: src.sde.SubVP_SDE
 beta_min: 0.1
 beta_max: 20.
 train_eps: 1e-5
