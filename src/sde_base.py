@@ -5,9 +5,10 @@ import torch.nn as nn
 
 
 class SDEBase(nn.Module):
-    def __init__(self, eps=1e-5, rescale=False):
+    def __init__(self, train_eps=1e-5, sample_eps=1e-3, rescale=False):
         super().__init__()
-        self.eps = eps
+        self.eps = train_eps
+        self.sample_eps = sample_eps
         self.rescale = rescale
 
     def drift_coef(self, x, t):
@@ -67,7 +68,7 @@ class SDEBase(nn.Module):
         g = self.diffusion_coef(t)
         g = self.match_dim(g, x)
         
-        if t[0] == self.eps:
+        if t[0] == self.sample_eps:
             z = 0
         else:
             z = torch.randn_like(x)
@@ -81,7 +82,7 @@ class SDEBase(nn.Module):
     @torch.no_grad()
     def euler_maruyama_sample(self, model, shape, device, n_steps=500):
         x_t = torch.randn(shape).to(device)
-        time_steps = np.linspace(1, self.eps, n_steps)
+        time_steps = np.linspace(1, self.sample_eps, n_steps)
         delta_t = time_steps[0] - time_steps[1]
         for t in tqdm(time_steps):
             time_batch = torch.ones(shape[0], device=device) * t
@@ -113,7 +114,7 @@ class SDEBase(nn.Module):
     @torch.no_grad()
     def predictor_corrector_sample(self, model, shape, device, n_steps=500, n_lang_steps=1, snr=0.16):
         x_t = torch.randn(shape).to(device)
-        time_steps = np.linspace(1, self.eps, n_steps)
+        time_steps = np.linspace(1, self.sample_eps, n_steps)
         delta_t = time_steps[0] - time_steps[1]
         for t in tqdm(time_steps):
             time_batch = torch.ones(shape[0], device=device) * t

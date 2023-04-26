@@ -1,0 +1,3 @@
+dim: 28
+dim_mults: [1, 2, 4]
+channels: 1

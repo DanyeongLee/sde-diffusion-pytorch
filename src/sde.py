@@ -8,13 +8,13 @@ class VE_SDE(SDEBase):
     '''
     An SDE version of NCSN
     '''
-    def __init__(self, sigma_min=0.01, sigma_max=1., eps=1e-5, rescale=False):
-        super().__init__(eps, rescale)
+    def __init__(self, sigma_min=0.01, sigma_max=1., train_eps=1e-5, sample_eps=1e-5, rescale=False):
+        super().__init__(train_eps, sample_eps, rescale)
         self.sigma_min = sigma_min
         self.sigma_max = sigma_max
 
     def drift_coef(self, x, t):
-        return 0
+        return torch.zeros_like(x)
 
     def sigma_t(self, t):
         return self.sigma_min * (self.sigma_max / self.sigma_min) ** t
@@ -24,15 +24,15 @@ class VE_SDE(SDEBase):
         return s_t * np.sqrt(2 * np.log(self.sigma_max / self.sigma_min))
     
     def x0_coef(self, t):
-        return 1
+        return torch.ones_like(t)
 
 
 class VP_SDE(SDEBase):
     '''
     An SDE version of DDPM.
     '''
-    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=False):
-        super().__init__(eps, rescale)
+    def __init__(self, beta_min=0.1, beta_max=20., train_eps=1e-5, sample_eps=1e-3, rescale=False):
+        super().__init__(train_eps, sample_eps, rescale)
         self.beta_min = beta_min
         self.beta_max = beta_max
 
@@ -61,8 +61,8 @@ class VP_SDE(SDEBase):
 
 class SubVP_SDE(SDEBase):
 
-    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=False):
-        super().__init__(eps, rescale)
+    def __init__(self, beta_min=0.1, beta_max=20., train_eps=1e-5, sample_eps=1e-3, rescale=False):
+        super().__init__(train_eps, sample_eps, rescale)
         self.beta_min = beta_min
         self.beta_max = beta_max
 

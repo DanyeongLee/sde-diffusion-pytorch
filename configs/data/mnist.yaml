@@ -1,0 +1,4 @@
+dataset: 'mnist'
+root: '../../data'
+batch_size: 64
+num_workers: 4

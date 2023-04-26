@@ -1,0 +1,6 @@
+_target_: src.sde.VE_SDE
+sigma_min: 0.1
+sigma_max: 1.0
+train_eps: 1e-5
+sample_eps: 1e-3
+rescale: True
