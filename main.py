@@ -81,7 +81,7 @@ def main(cfg: DictConfig):
     for epoch in range(cfg.train.n_epochs):
         print(f'Epoch {epoch}')
         train_loss = train(model, optimizer, ema, sde, train_dataloader, device)
-        val_loss, samples = validation(model, sde, val_dataloader, device)
+        val_loss, samples = validation(model, sde, ema, val_dataloader, device)
         wandb.log({'train/loss': train_loss, 'val/loss': val_loss})
         wandb.log({'samples': [wandb.Image(sample) for sample in samples]})
 
