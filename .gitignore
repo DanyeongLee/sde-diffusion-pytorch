@@ -1,6 +1,7 @@
 ckpts/
 outputs/
 wandb/
+data/
 
 
 # Byte-compiled / optimized / DLL files

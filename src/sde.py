@@ -8,7 +8,7 @@ class VE_SDE(SDEBase):
     '''
     An SDE version of NCSN
     '''
-    def __init__(self, sigma_min=0.01, sigma_max=1., eps=1e-5, rescale=False):
+    def __init__(self, sigma_min=0.01, sigma_max=1., eps=1e-5, rescale=True):
         super().__init__(eps, rescale)
         self.sigma_min = sigma_min
         self.sigma_max = sigma_max
@@ -31,7 +31,7 @@ class VP_SDE(SDEBase):
     '''
     An SDE version of DDPM.
     '''
-    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=False):
+    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=True):
         super().__init__(eps, rescale)
         self.beta_min = beta_min
         self.beta_max = beta_max
@@ -60,8 +60,7 @@ class VP_SDE(SDEBase):
 
 
 class SubVP_SDE(SDEBase):
-
-    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=False):
+    def __init__(self, beta_min=0.1, beta_max=20., eps=1e-5, rescale=True):
         super().__init__(eps, rescale)
         self.beta_min = beta_min
         self.beta_max = beta_max
