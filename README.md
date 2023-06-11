@@ -37,3 +37,4 @@ samples = sde.predictor_corrector_sample(model, shape, device)
 ```
 
 # Generated samples (example)
+![samples](/samples.png?raw=true)
